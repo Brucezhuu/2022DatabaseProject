@@ -3,8 +3,17 @@ import re
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from app01.myForm import StuLoginForm,StuRegisterForm,TeacherRegisterForm,TeacherLoginForm
+from app01.myForm import StuLoginForm, StuRegisterForm, TeacherRegisterForm, TeacherLoginForm
 from app01.models import StudentInfo, TeacherInfo
+
+import pymysql
+
+# 打开数据库连接
+db = pymysql.connect(host='localhost',
+                     user='root',
+                     password='Zcx20020529',
+                     database='mydb')
+cursor = db.cursor()
 
 
 # Create your views here.
@@ -35,11 +44,15 @@ def StudentRegister(request):
                 return JsonResponse({'error': 4003, 'msg': '密码不符合规范'})
 
             # 成功
-            new_student = StudentInfo()
-            new_student.student_realName = realName
-            new_student.student_password = password1
-            new_student.student_email = email
-            new_student.save()
+            # new_student = StudentInfo()
+            # new_student.student_realName = realName
+            # new_student.student_password = password1
+            # new_student.student_email = email
+            # new_student.student_id = stu_id
+            # new_student.save()
+            sql = 'insert into studentinfo(student_id,student_password,student_email,student_realName) values ("stu_id","password1","email","realName")'
+            cursor.execute(sql)
+            db.commit()
             return JsonResponse({'error': 0, 'msg': '学生注册成功!'})
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
@@ -52,17 +65,23 @@ def StudentLogin(request):
         if login_form.is_valid():
             student_id = login_form.cleaned_data.get('student_id')
             student_password = login_form.cleaned_data.get('student_password')
-            try:
-                user = StudentInfo.object.get(student_id=student_id)
-            except:
+            # try:
+            #      user = StudentInfo.object.get(student_id=student_id)
+            # except:
+            #     return JsonResponse({'error': 4002, 'msg': '学号不存在'})
+            sql = "select * from studentinfo where student_id='{}'".format(student_id)
+            cnt = cursor.execute(sql)
+            if cnt == 0:
                 return JsonResponse({'error': 4002, 'msg': '学号不存在'})
-            return JsonResponse({
-                'error': 0,
-                'msg': "登录成功",
-                'student_name': user.student_realName,
-                'student_id': user.student_id,
-                'email': user.useremail,
-            })
+            else:
+                row = cursor.fetchone()
+                return JsonResponse({
+                    'error': 0,
+                    'msg': "登录成功",
+                    'student_realName': row[4],
+                    'student_id': student_id,
+                    'email': row[3],
+                })
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
 
@@ -85,12 +104,15 @@ def TeacherRegister(request):
                 return JsonResponse({'error': 4003, 'msg': '密码不符合规范'})
 
             # 成功
-            new_teacher = TeacherInfo()
-            new_teacher.teacher_id = teacher_id
-            new_teacher.teacher_password = password2
-            new_teacher.teacher_realName = realName
-            new_teacher.teacher_email = email
-            new_teacher.save()
+            # new_teacher = TeacherInfo()
+            # new_teacher.teacher_id = teacher_id
+            # new_teacher.teacher_password = password2
+            # new_teacher.teacher_realName = realName
+            # new_teacher.teacher_email = email
+            # new_teacher.save()
+            sql = 'insert into studentinfo(teacher_id,teacher_password,teacher_email,teacher_realName) values ("teacher_id","password1","email","realName")'
+            cursor.execute(sql)
+            db.commit()
             return JsonResponse({'error': 0, 'msg': '老师注册成功!'})
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
 
@@ -103,15 +125,21 @@ def TeacherLogin(request):
         if login_form.is_valid():
             teacher_id = login_form.cleaned_data.get('teacher_id')
             teacher_password = login_form.cleaned_data.get('teacher_password')
-            try:
-                user = TeacherInfo.object.get(teacher_id=teacher_id)
-            except:
+            # try:
+            #     user = TeacherInfo.object.get(teacher_id=teacher_id)
+            # except:
+            #     return JsonResponse({'error': 4002, 'msg': '教工号不存在'})
+            sql = "select * from teacherinfo where teacher_id='{}'".format(teacher_id)
+            cnt = cursor.execute(sql)
+            if cnt == 0:
                 return JsonResponse({'error': 4002, 'msg': '教工号不存在'})
-            return JsonResponse({
-                'error': 0,
-                'msg': "登录成功",
-                'student_id': user.teacher_id,
-                'email': user.useremail,
-                'realName': user.realName,
-            })
+            else:
+                row = cursor.fetchone()
+                return JsonResponse({
+                    'error': 0,
+                    'msg': "登录成功",
+                    'student_id': teacher_id,
+                    'email': row[3],
+                    'realName': row[4],
+                })
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
