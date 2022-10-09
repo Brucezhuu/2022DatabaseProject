@@ -24,5 +24,7 @@ urlpatterns = [
     path('login/student/', views.StudentLogin),
     path('register/student/', views.StudentRegister),
     path('login/teacher/', views.TeacherLogin),
-    path('register/teacher', views.TeacherRegister)
+    path('register/teacher', views.TeacherRegister),
+    path('update/pwd/student', views.update_pwd_student),
+    path('update/pwd/teacher', views.update_pwd_teacher),
 ]

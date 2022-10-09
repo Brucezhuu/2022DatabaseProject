@@ -143,3 +143,43 @@ def TeacherLogin(request):
                     'realName': row[4],
                 })
     return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
+
+
+@csrf_exempt
+def update_pwd_student(request):
+    if request.method == 'POST':
+        register_email = request.POST.get("student_email")
+        password = request.POST.get("password")
+        try:
+            user = StudentInfo.objects.get(student_email=register_email)
+        except:
+            return JsonResponse({'error': 4003, 'msg': '邮箱不存在'})
+        if not re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,18}$', password):
+            return JsonResponse({'error': 4001, 'msg': '密码不符合规范'})
+        user.userpassword = password
+        user.save()
+        del request.session["code"]  # 删除session
+        msg = "密码已重置"
+        return JsonResponse({'error': 0, 'msg': msg})
+
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
+
+
+@csrf_exempt
+def update_pwd_teacher(request):
+    if request.method == 'POST':
+        register_email = request.POST.get("teacher_email")
+        password = request.POST.get("password")
+        try:
+            user = TeacherInfo.objects.get(teacher_email=register_email)
+        except:
+            return JsonResponse({'error': 4003, 'msg': '邮箱不存在'})
+        if not re.match('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,18}$', password):
+            return JsonResponse({'error': 4001, 'msg': '密码不符合规范'})
+        user.userpassword = password
+        user.save()
+        del request.session["code"]  # 删除session
+        msg = "密码已重置"
+        return JsonResponse({'error': 0, 'msg': msg})
+
+    return JsonResponse({'error': 2001, 'msg': '请求方式错误'})
