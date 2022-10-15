@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    课程列表
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        {#新建按钮#}
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/app01/course/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                新建课程
+            </a>
+        </div>
+
+        {#面板#}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                课程列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>课程ID</th>
+                    <th>课程名称</th>
+                    <th>开课院系</th>
+                    <th>教工号</th>
+                    <th>任课教师</th>
+                    <th>课程信息</th>
+                    <th>前置课程</th>
+                    <th>选课人数</th>
+                    <th>上课时间</th>
+                    <th>总学时</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+
+                        <td>{{ obj.1 }}</td>
+                        <td>{{ obj.2 }}</td>
+                        <td>{{ obj.3 }}</td>
+                        <td>{{ obj.4 }}</td>
+                        <td>{{ obj.5 }}</td>
+                        <td>{{ obj.6 }}</td>
+                        <td>{{ obj.7 }}</td>
+                        <td>{{ obj.8 }}</td>
+                        <td>{{ obj.9 }}</td>
+                        <td>{{ obj.10 }}</td>
+                        <td>
+                            <a href="/app01/course/{{ obj.1 }}/edit/" class="btn btn-primary btn-xs">编辑</a>
+                            <a href="/app01/course/{{ obj.1 }}/delete/" class="btn btn-danger btn-xs">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# 分页 #}
+        <ul class='pagination'>
+            {{ page_string }}
+        </ul>
+    </div>
+{% endblock content %}
