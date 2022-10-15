@@ -1,7 +1,5 @@
 from django import forms
-
 from app01 import models
-
 
 class StuLoginForm(forms.Form):
     student_id = forms.CharField(label="学号", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -9,13 +7,13 @@ class StuLoginForm(forms.Form):
 
 
 class StuRegisterForm(forms.Form):
-    student_realName = forms.CharField(label="真实姓名", max_length=128,
-                                       widget=forms.TextInput(attrs={'class': 'form-control'}))
     student_id = forms.CharField(label="学号", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
     student_password1 = forms.CharField(label="密码", max_length=128,
                                         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     student_password2 = forms.CharField(label="确认密码", max_length=128,
                                         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    student_realName = forms.CharField(label="真实姓名", max_length=128,
+                                       widget=forms.TextInput(attrs={'class': 'form-control'}))
     student_email = forms.EmailField(label="个人邮箱", widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
 

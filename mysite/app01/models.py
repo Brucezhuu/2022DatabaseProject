@@ -6,7 +6,7 @@ from datetime import datetime
 class StudentInfo(models.Model):
     student_id = models.CharField(max_length=128, unique=True)
     student_password = models.CharField(max_length=128)
-    student_email = models.EmailField()
+    student_email = models.EmailField(unique=True)
     student_realName = models.CharField(max_length=128)
 
     # has_confirmed = models.BooleanField(default=False)
@@ -40,11 +40,11 @@ class TeacherInfo(models.Model):
 class Course(models.Model):
     course_id = models.CharField(max_length=128, unique=True)
     course_name = models.CharField(max_length=128, unique=False)
-    course_department = models.CharField(max_length=128, unique=False)
-    course_teacher_id = models.CharField(max_length=128, unique=False)
+    course_department = models.CharField(max_length=128, unique=False, blank=True, default="")
+    course_teacher_id = models.CharField(max_length=128, unique=False,default="")
     course_teacher_name = models.CharField(max_length=128, unique=False)
     course_info = models.CharField(max_length=1024, unique=False)
-    course_pc = models.CharField(max_length=128, unique=False, blank=True)
+    course_pc = models.CharField(max_length=128, unique=False, blank=True, default=0)
     course_count = models.IntegerField(unique=False, default=0)
     course_time = models.CharField(max_length=128, unique=False)
-    course_total = models.CharField(max_length=128, unique=False)
+    course_total = models.CharField(max_length=128, unique=False,default=0)
